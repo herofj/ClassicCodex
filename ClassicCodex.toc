@@ -86,6 +86,12 @@ lib\CallbackHandler-1.0\CallbackHandler-1.0.xml
 lib\HereBeDragons\HereBeDragons-2.0.lua
 lib\HereBeDragons\HereBeDragons-Pins-2.0.lua
 
+# ui localization
+loc\loc_enUS.lua
+loc\loc_zhCN.lua
+loc\loc_zhTW.lua
+loc\loc_init.lua
+
 # main
 command.lua
 config.lua

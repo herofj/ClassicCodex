@@ -63,6 +63,8 @@ CodexMap.zones = {
 	[3358] = 1461, --Arathi Basin
 }
 
+local loc = CodexText["loc"]
+
 function str2rgb(text)
 	if not text then return 1, 1, 1 end
 	if CodexColors[text] then return unpack(CodexColors[text]) end
@@ -235,7 +237,7 @@ function CodexMap:ShowTooltip(meta, tooltip)
 									foundObjective = true
 									local r, g, b = CodexMap:GetTooltipColor(objNum, objNeeded)
 									local sellCount = tonumber(meta["sellCount"]) > 0 and " |cff555555[|cffcccccc" .. meta["sellCount"] .. "x" .. "|cff555555]" or ""
-									tooltip:AddLine("|cffaaaaaa- |cffffffff" .. "Buy" .. ": |r" .. itemName .. ": " .. objNum .. "/" .. objNeeded .. sellCount, r, g, b)
+									tooltip:AddLine("|cffaaaaaa- |cffffffff" .. loc.Text_Map_Buy .. ": |r" .. itemName .. ": " .. objNum .. "/" .. objNeeded .. sellCount, r, g, b)
 								end
 							end
 						end
@@ -243,8 +245,8 @@ function CodexMap:ShowTooltip(meta, tooltip)
 				end
 
 				if not foundObjective and meta["questLevel"] and meta["texture"] then
-					local questLevelString = "Level: " .. CodexMap:HexDifficultyColor(meta["questLevel"]) .. meta["questLevel"] .. "|r"
-					local questMinString = meta["questMinimumLevel"] and " / Required: " .. CodexMap:HexDifficultyColor(meta["questMinimumLevel"], true) .. meta["questMinimumLevel"] .. "|r" or ""
+					local questLevelString = loc.Text_Map_Level .. CodexMap:HexDifficultyColor(meta["questLevel"]) .. meta["questLevel"] .. "|r"
+					local questMinString = meta["questMinimumLevel"] and " / " .. loc.Text_Map_Require .. CodexMap:HexDifficultyColor(meta["questMinimumLevel"], true) .. meta["questMinimumLevel"] .. "|r" or ""
 					tooltip:AddLine("|cffaaaaaa- |r" .. questLevelString .. questMinString , .8,.8,.8)
 				end
 			end
@@ -259,7 +261,7 @@ function CodexMap:ShowTooltip(meta, tooltip)
 					catchFallback = true
 					local dr, dg, db = CodexMap:GetTooltipColor(tonumber(meta["dropRate"]), 100)
 					local lootColor = string.format("%02x%02x%02x", dr * 255,dg * 255, db * 255)
-					tooltip:AddLine("|cffaaaaaa- |r" .. "Loot: " .. item .. " |cff555555[|cff" .. lootColor .. meta["dropRate"] .. "%|cff555555]", 1, .5, .5)
+					tooltip:AddLine("|cffaaaaaa- |r" .. loc.Text_Map_Loot .. item .. " |cff555555[|cff" .. lootColor .. meta["dropRate"] .. "%|cff555555]", 1, .5, .5)
 				end
 			end
 
@@ -269,8 +271,8 @@ function CodexMap:ShowTooltip(meta, tooltip)
 			end
 
 			if not catchFallback and meta["texture"] and meta["questLevel"] then
-				local questLevelString = "Level: " .. CodexMap:HexDifficultyColor(meta["questLevel"]) .. meta["questLevel"] .. "|r"
-				local questMinString = meta["questMinimumLevel"] and " / " .. "Required: " .. CodexMap:HexDifficultyColor(meta["questMinimumLevel"], true) .. meta["questMinimumLevel"] .. "|r" or ""
+				local questLevelString = loc.Text_Map_Level .. CodexMap:HexDifficultyColor(meta["questLevel"]) .. meta["questLevel"] .. "|r"
+				local questMinString = meta["questMinimumLevel"] and " / " .. loc.Text_Map_Require .. CodexMap:HexDifficultyColor(meta["questMinimumLevel"], true) .. meta["questMinimumLevel"] .. "|r" or ""
 				tooltip:AddLine("|cffaaaaaa- |r" .. questLevelString .. questMinString , .8,.8,.8)
 			end
 		end
@@ -290,11 +292,11 @@ function CodexMap:ShowTooltip(meta, tooltip)
 		if meta["sellCount"] then
 			local item = meta["itemLink"] or "[" .. meta["item"][1] .. "]"
 			local sellCount = tonumber(meta["sellCount"]) > 0 and  " |cff555555[|cffcccccc" .. meta["sellCount"] .. "x" .. "|cff555555]" or ""
-			tooltip:AddLine("Vendor: " .. item .. sellCount, 1, 1, 1)
+			tooltip:AddLine(loc.Text_Map_Vendor .. item .. sellCount, 1, 1, 1)
 		elseif meta["item"][1] then
 			local item = meta["itemLink"] or "[" .. meta["item"][1] .. "]"
 			local r, g, b = CodexMap:GetTooltipColor(tonumber(meta["dropRate"]), 100)
-			tooltip:AddLine("|cffffffffLoot: " .. item ..  " |cff555555[|r" .. meta["dropRate"] .. "%|cff555555]", r,g,b)
+			tooltip:AddLine("|cffffffff" .. loc.Text_Map_Loot .. item ..  " |cff555555[|r" .. meta["dropRate"] .. "%|cff555555]", r,g,b)
 		end
 	end
 
@@ -391,7 +393,7 @@ function CodexMap:CreateMapMarker(node)
 	marker:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR_LEFT")
 		GameTooltip:SetText(marker.spawn, .3, 1, .8)
-		GameTooltip:AddDoubleLine("Level: ", (marker.level or UNKNOWN), .8, .8, .8, 1, 1, 1)
+		GameTooltip:AddDoubleLine(loc.Text_Map_Level, (marker.level or UNKNOWN), .8, .8, .8, 1, 1, 1)
 
 		for title, meta in pairs(marker.node) do
 			CodexMap:ShowTooltip(meta, GameTooltip)
@@ -421,7 +423,7 @@ function CodexMap:CreateMinimapMarker(node)
 	marker:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR_LEFT")
 		GameTooltip:SetText(marker.spawn, .3, 1, .8)
-		GameTooltip:AddDoubleLine("Level: ", (marker.level or UNKNOWN), .8, .8, .8, 1, 1, 1)
+		GameTooltip:AddDoubleLine(loc.Text_Map_Level, (marker.level or UNKNOWN), .8, .8, .8, 1, 1, 1)
 
 		for title, meta in pairs(marker.node) do
 			CodexMap:ShowTooltip(meta, GameTooltip)

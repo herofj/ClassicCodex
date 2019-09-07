@@ -9,10 +9,11 @@ local objects = CodexDB["objects"]["data"]
 local refloot = CodexDB["refloot"]["data"]
 local quests = CodexDB["quests"]["data"]
 local zones = CodexDB["zones"]["loc"]
+local loc = CodexText["loc"]
 
 -- result buttons
 local function StartAndFinish(questData, startOrFinish, types)
-    local strings = {["start"] = "Quest Start: ", ["end"] = "Quest End: "}
+    local strings = {["start"] = loc.Text_Quest_Start, ["end"] = loc.Text_Quest_End}
     for _, key in pairs(types) do
         if questData[startOrFinish] and questData[startOrFinish][key] then
             local typeName = {["U"] = "units", ["O"] = "objects", ["I"] = "items"}
@@ -75,12 +76,12 @@ local function ResultButtonEnter(self)
         if questData.lvl then
             local questLevel = tonumber(questData.lvl)
             local color = GetQuestDifficultyColor(questLevel)
-            GameTooltip:AddLine("|cffffffffQuest Level: |r" .. questLevel, color.r, color.g, color.b)
+            GameTooltip:AddLine("|cffffffff" .. loc.Text_Quest_Level .. "|r" .. questLevel, color.r, color.g, color.b)
         end
         if questData.min then
             local questLevel = tonumber(questData.min)
             local color = GetQuestDifficultyColor(questLevel)
-            GameTooltip:AddLine("|cffffffffRequired Level: |r" .. questLevel, color.r, color.g, color.b)
+            GameTooltip:AddLine("|cffffffff" .. loc.Text_Quest_Req_Level .. "|r" .. questLevel, color.r, color.g, color.b)
         end
 
         GameTooltip:Show()
@@ -100,23 +101,23 @@ local function ResultButtonEnter(self)
                 GameTooltip:AddDoubleLine("Level", unitData.lvl, 1, 1, 0.8, 1, 1, 1)
             end
 
-            local reactionStringA = "|c00ff0000Hostile|r"
-            local reactionStringH = "|c00ff0000Hostile|r"
+            local reactionStringA = "|c00ff0000".. loc.Text_ToolTip_Hostile .. "|r"
+            local reactionStringH = "|c00ff0000".. loc.Text_ToolTip_Hostile .. "|r"
             if unitData.fac then
               if unitData.fac == "AH" then
-                reactionStringA = "|c0000ff00Friendly|r"
-                reactionStringH = "|c0000ff00Friendly|r"
+                reactionStringA = "|c0000ff00" .. loc.Text_ToolTip_Friendly .. "|r"
+                reactionStringH = "|c0000ff00" .. loc.Text_ToolTip_Friendly .. "|r"
               elseif unitData.fac == "A" then
-                reactionStringA = "|c0000ff00Friendly|r"
+                reactionStringA = "|c0000ff00" .. loc.Text_ToolTip_Friendly .. "|r"
               elseif unitData.fac == "H" then
-                reactionStringH = "|c0000ff00Friendly|r"
+                reactionStringH = "|c0000ff00" .. loc.Text_ToolTip_Friendly .. "|r"
               end
             end
-            GameTooltip:AddLine("\nReaction", 1, 1, 0.8)
-            GameTooltip:AddDoubleLine("Alliance", reactionStringA, 1, 1, 1, 0, 0, 0)
-            GameTooltip:AddDoubleLine("Horde", reactionStringH, 1, 1, 1, 0, 0, 0)
+            GameTooltip:AddLine("\n" .. loc.Text_ToolTip_Reaction, 1, 1, 0.8)
+            GameTooltip:AddDoubleLine(loc.Text_ToolTip_Alliance, reactionStringA, 1, 1, 1, 0, 0, 0)
+            GameTooltip:AddDoubleLine(loc.Text_ToolTip_Horde, reactionStringH, 1, 1, 1, 0, 0, 0)
         end
-        GameTooltip:AddLine("\nLocation", 1, 1, 0.8)
+        GameTooltip:AddLine("\n" .. loc.Text_ToolTip_Location, 1, 1, 0.8)
         if CodexDB[self.btype]["data"][id] and CodexDB[self.btype]["data"][id]["coords"] then
             for _, data in pairs(CodexDB[self.btype]["data"][id]["coords"]) do
                 local zone = data[3]
@@ -248,7 +249,7 @@ local function ResultButtonEnterSpecial(self)
     -- unit
     if self.buttonType == "U" then
         if items[id]["U"] then
-            GameTooltip:SetText("Looted from", 0.3, 1, 0.8)
+            GameTooltip:SetText(loc.Text_ToolTip_LootedFrom, 0.3, 1, 0.8)
             for unitId, chance in pairs(items[id]["U"]) do
                 count = count + 1
                 if count > tooltipLimit then
@@ -289,7 +290,7 @@ local function ResultButtonEnterSpecial(self)
     -- object
     elseif self.buttonType == "O" then
         if items[id]["O"] then
-            GameTooltip:SetText("Looted from", 0.3, 1, 0.8)
+            GameTooltip:SetText(loc.Text_ToolTip_LootedFrom, 0.3, 1, 0.8)
             for objectId, chance in pairs(items[id]["O"]) do
                 count = count + 1
                 if count > tooltipLimit then
@@ -330,7 +331,7 @@ local function ResultButtonEnterSpecial(self)
     -- Vendor
     elseif self.buttonType == "V" then
         if items[id]["V"] then
-            GameTooltip:SetText("Sold by", 0.3, 1, 0.8)
+            GameTooltip:SetText(loc.Text_ToolTip_SoldBy, 0.3, 1, 0.8)
             for unitId, sellCount in pairs(items[id]["V"]) do
                 count = count + 1
                 if count > tooltipLimit then
@@ -533,7 +534,7 @@ local function RefreshView(i, key, caption)
       CodexBrowser.tabs[key].list.warn:SetTextColor(1,.2,.2,1)
       CodexBrowser.tabs[key].list.warn:SetJustifyH("CENTER")
       CodexBrowser.tabs[key].list.warn:SetPoint("TOP", 5, -5)
-      CodexBrowser.tabs[key].list.warn:SetText("!! |cffffffffToo many entries. Results shown: " .. searchLimit .. "|r !!")
+      CodexBrowser.tabs[key].list.warn:SetText("!! |cffffffff" .. loc.Text_Browser_TooManyEntry .. searchLimit .. "|r !!")
     end
   
     if i >= searchLimit then
@@ -607,8 +608,8 @@ end)
 CodexBrowserIcon:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
     GameTooltip:SetText("ClassicCodex")
-    GameTooltip:AddDoubleLine("Left-Click", "Open Browser", 1, 1, 1, 1, 1, 1)
-    GameTooltip:AddDoubleLine("Shift-Click", "Move Button", 1, 1, 1, 1, 1, 1)
+    GameTooltip:AddDoubleLine(loc.Text_Browser_LeftClick, loc.Text_Browser_OpenBrowser, 1, 1, 1, 1, 1, 1)
+    GameTooltip:AddDoubleLine(loc.Text_Browser_ShiftClick, loc.Text_Browser_MoveButton, 1, 1, 1, 1, 1, 1)
     GameTooltip:Show()
 end)
 
@@ -713,7 +714,7 @@ end)
 CodexBrowser.clean.text = CodexBrowser.clean:CreateFontString("Caption", "LOW", "GameFontWhite")
 CodexBrowser.clean.text:SetAllPoints(CodexBrowser.clean)
 CodexBrowser.clean.text:SetFont(CodexUI.defaultFont, CodexUIConfig.global.fontSize, "OUTLINE")
-CodexBrowser.clean.text:SetText("Clean Map")
+CodexBrowser.clean.text:SetText(loc.Text_Browser_CleanMap)
 CodexUI.api.SkinButton(CodexBrowser.clean)
 
 CreateBrowseWindow("units", "CodexBrowserUnits", CodexBrowser, "BOTTOMLEFT", 5, 5)
@@ -726,24 +727,24 @@ SelectView(CodexBrowser.tabs["units"])
 CodexBrowser.input = CreateFrame("EditBox", "CodexBrowserSearch", CodexBrowser)
 CodexBrowser.input:SetFont(CodexUI.defaultFont, CodexUIConfig.global.fontSize, "OUTLINE")
 CodexBrowser.input:SetAutoFocus(false)
-CodexBrowser.input:SetText("Search")
+CodexBrowser.input:SetText(loc.Text_Browser_Search)
 CodexBrowser.input:SetJustifyH("LEFT")
 CodexBrowser.input:SetPoint("TOPLEFT", CodexBrowser, "TOPLEFT", 5, -30)
 CodexBrowser.input:SetPoint("BOTTOMRIGHT", CodexBrowser, "TOPRIGHT", -100, -55)
 CodexBrowser.input:SetTextInsets(10,10,5,5)
 CodexBrowser.input:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
 CodexBrowser.input:SetScript("OnEditFocusGained", function(self)
-    if self:GetText() == "Search" then self:SetText("") end
+    if self:GetText() == loc.Text_Browser_Search then self:SetText("") end
 end)
 
 CodexBrowser.input:SetScript("OnEditFocusLost", function(self)
-  if self:GetText() == "" then self:SetText("Search") end
+  if self:GetText() == "" then self:SetText(loc.Text_Browser_Search) end
 end)
 
 -- This script updates all the search tabs when the search text changes
 CodexBrowser.input:SetScript("OnTextChanged", function(self)
   local text = self:GetText()
-  if (text == "Search") then text = "" end
+  if (text == loc.Text_Browser_Search) then text = "" end
 
   for _, caption in pairs({"Units","Objects","Items","Quests"}) do
     local searchType = strlower(caption)
